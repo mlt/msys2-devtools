@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+# export MINGW_PACKAGE_PREFIX=mingw-w64-ucrt-mcf-x86_64
+# export MINGW_PACKAGES=C:/dev/MINGW-packages
+
+from msys2_devtools.mock_aur import app
+app.run(debug=True)
