@@ -13,6 +13,7 @@ from pathlib import Path
 from functools import lru_cache
 
 PACKAGES_DIR = os.environ.get("MINGW_PACKAGES", 'C:/dev/MINGW-packages')
+EXTRA_DIR = os.environ.get("MINGW_PACKAGES_EXTRA", 'C:/dev/MINGW-packages.mcf')
 BASH = Path(sys.executable).parents[2] / 'usr' / 'bin' / 'bash.exe'
 PKGBUILD2JSON = join(dirname(__file__), "pkgbuild2json.sh")
 
@@ -31,8 +32,10 @@ def _iter_lookup_pkgbuild(pkgname: str):
         return
     pkgname = match.group('prefix') + match.group('pkg')
     prefixes = ['pkgname', 'pkgver', 'pkgbase', "depends", "makedepends"]
-    pkgbuild_path = join(PACKAGES_DIR, pkgname, 'PKGBUILD')
-    app.logger.info(f"*** pkgbuild_path: {pkgbuild_path}")
+    pkgbuild_path = join(EXTRA_DIR, pkgname, 'PKGBUILD')
+    if not os.path.exists(pkgbuild_path):
+        pkgbuild_path = join(PACKAGES_DIR, pkgname, 'PKGBUILD')
+    app.logger.debug(f"pkgbuild_path: {pkgbuild_path}")
     try:
         out = subprocess.check_output(
             [BASH, PKGBUILD2JSON, pkgbuild_path] + prefixes,
